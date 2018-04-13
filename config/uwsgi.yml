@@ -1,0 +1,7 @@
+uwsgi:
+  socket: /app/indri_suite.sock
+  chmod-socket: 666
+  module: indri_suite.app
+  enable-threads: true
+  workers: 8
+  virtualenv: env/
