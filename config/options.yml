@@ -1,0 +1,5 @@
+bin:
+  indri_query: /local/bin/IndriRunQuery
+  trec_eval: /local/bin/trec_eval
+
+tmp_folder: ./tmp

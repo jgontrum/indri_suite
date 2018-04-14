@@ -8,4 +8,4 @@ app.add_api("api.yml",
 application = app.app
 
 if __name__ == '__main__':
-    app.run(port=8080, server='flask', host="localhost")
+    app.run(port=8080, server='flask', host="localhost", static_folder="static")

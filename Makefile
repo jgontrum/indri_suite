@@ -19,7 +19,7 @@ clean:
 	find . -depth -name '__pycache__' -exec rm -rfv {} \;
 
 start: env/bin/python
-	env/bin/uwsgi --yaml=config/uwsgi.yml
+	env/bin/uwsgi --ini=config/uwsgi.ini
 
 update-all-packages: env/bin/python
 	 env/bin/pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 env/bin/pip install -U

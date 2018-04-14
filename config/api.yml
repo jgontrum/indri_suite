@@ -8,108 +8,168 @@ produces:
   - application/json
 basePath: /api/v1
 paths:
-  /foo:
+  /search:
     post:
-      tags: [Foo]
-      operationId: indri_suite.api.foo.post
-      summary: Send some data formated as JSON to the server.
+      tags: [Search]
+      operationId: indri_suite.api.search.post
+      summary: Send a query to Indri and get the response
       parameters:
         - name: request
           in: body
           schema:
             type: object
-            required: # These fields have to exists
-              - data
+            required:
+              - query
+              - settings
             properties:
-              data:
+              query:
                 type: string
-                description: Some string.
-                example: Blah!
-      responses:
-        200: # If we return with a 200 status code...
-          description: Returns a part of the input (hey, it's just a demo...)
-          schema:
-            type: object
-            properties:
-              returnData:
-                type: string
-                description: Some data that is returned.
-                example: This is an example string.
-
-    get:
-      tags: [Foo]
-      operationId: indri_suite.api.foo.get
-      summary: Simply call an URL and retrieve a JSON data
+                description: An Indri query.
+                example: "#combine(he she)"
+              settings:
+                $ref: '#/definitions/Settings'
+        - in: query
+          name: size
+          type: integer
+          description: The numbers of items to return.
+          minimum: 1
+          maximum: 1000
+          default: 50
+        - in: query
+          name: page
+          type: integer
+          description: Current page.
+          minimum: 0
+          default: 0
       responses:
         200:
-          description: Returns a JSON containing a boolean.
+          description: Return a list of the found documents.
+          schema:
+            $ref: '#/definitions/SearchResponse'
+        400:
+          description: No results were found.
+          schema:
+            type: string
+            description: The error message.
+
+  /evaluate:
+    post:
+      tags: [Evaluate]
+      operationId: indri_suite.api.evaluate.post
+      summary: Send a query to Indri and evaluate it againat the qrels.
+      parameters:
+        - name: request
+          in: body
           schema:
             type: object
+            required:
+              - query
+              - query_id
+              - settings
             properties:
-              bar:
-                type: boolean
-                description: Some boolean data that is returned.
-                example: true
-
-  /complicated/complex:
-    get:
-      tags: [Complex]
-      operationId: indri_suite.api.complicated.complex.get
-      summary: Returns a very complex JSON object
+              query:
+                type: string
+                description: An Indri query.
+                example: "#combine(he she)"
+              query_id:
+                type: string
+                description: The ID of the query.
+                example: "23"
+              settings:
+                $ref: '#/definitions/Settings'
       responses:
         200:
-          description: Returns a complex JSON to show how to define a schema with different data types etc.
+          description: Return an evaluation summary.
           schema:
-            $ref: '#/definitions/ComplexResponse'
+            $ref: '#/definitions/EvaluationResponse'
+        400:
+          description: No results were found.
+          schema:
+            type: string
+            description: The error message.
 
 definitions:
-  ComplexResponse:
+  Settings:
     type: object
     required:
-      - text
-      - createdAt
+      - index_path
+      - corpus_path
     properties:
-      text:
+      index_path:
         type: string
-        description: Some string.
-        example: This is an example.
-      number:
+        description: Filepath to the index directory.
+        example: "/nobackup/gontrum/ir/lab2/GH95_index/"
+      corpus_path:
+        type: string
+        description: Filepath to the folder of the extracted corpus.
+        example: "/nobackup/gontrum/ir/lab2/GH95/"
+      gold_eval_path:
+        type: string
+        description: Filepath to the gold file.
+        example: "/nobackup/gontrum/ir/lab2/AH-ENGLISH-CLEF2006.txt"
+
+  DocumentReference:
+    type: object
+    properties:
+      query_id:
+        type: string
+        example: "Q0"
+      document_id:
+        type: string
+        example: "GH951020-000134"
+      document:
+        type: string
+        description: The actual document, including XML tags.
+        example: "Lot's of XML text."
+      score:
         type: number
-        description: A number (float/int).
+        description: The search rating of this document.
+        example: -4.6095
+      index:
+        type: number
+        description: The position of the search result.
         example: 1
-      specialText:
-        type: string
-        description: Some text that has to be at least 10 characters long.
-        example: This is an example.
-        minLength: 10
-      specialNumber:
+
+  SearchResponse:
+    type: object
+    properties:
+      size:
         type: number
-        description: A number (float/int) in the range of 10 to 100
-        example: 50
-        minimum: 10
-        maximum: 100
-      good:
-        type: boolean
-        description: We even support booleans.
-        example: false
-      createdAt:
-        type: string
-        format: date-time
-        description: Can you believe it? Even dates can be validated!
-        example: 2016-12-09T22:06:39.103496Z
-      aNiceList:
+      documents:
         type: array
-        description: Also lists (arrays) are possible. The definition under 'items' must be true for all members of the list.
+        items:
+          $ref: '#/definitions/DocumentReference'
+
+  EvaluationResponse:
+    type: object
+    properties:
+      raw_eval_output:
+        type: string
+        description: The whole output from trec_eval
+      eval:
+        type: object
+        description: Structured output from trec_eval
+        properties:
+          num:
+            type: number
+      relevant_documents:
+        description: The relevant gold documents.
+        type: array
+        items:
+          $ref: '#/definitions/DocumentReference'
+      retrieved_documents:
+        description: The first retrieved documents.
+        type: array
+        items:
+          $ref: '#/definitions/DocumentReference'
+      relevant_retrieved:
+        description: Relevant documents that were retrieved.
+        type: array
+        items:
+          $ref: '#/definitions/DocumentReference'
+      missing_relevant_documents:
+        description: A list of document ids that are not present in the corpus.
+        type: array
         items:
           type: string
-          description: An element of the list.
-          example: I am a list element
-      aNestedObject:
-        type: object
-        description: Oh, and nested objects are also possible.
-        properties:
-          iAmNested:
-            type: string
-            description: Some string again.
-            example: I am a string in an object
-
+          description: Id of a document
