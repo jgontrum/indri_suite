@@ -22,3 +22,4 @@ In the frontend, set the absolute paths to the corpus folder, the index folder
 and the qrel file to evaluate against. This project is intended to run locally
 on the same server where these files are located.
 
+![Screencast](http://g.recordit.co/UmDr5CSp02.gif)
