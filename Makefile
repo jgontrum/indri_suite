@@ -25,9 +25,6 @@ update-all-packages: env/bin/python
 	 env/bin/pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 env/bin/pip install -U
 
 compile-frontend:
-	 cd frontend/
-	 make build
-	 cd ../
-	 rm static/*
-	 touch static/.gitkeep
+	 cd frontend/ && make build
+	 rm static/* && touch static/.gitkeep
 	 mv frontend/dist/* static/

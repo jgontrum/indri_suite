@@ -27,7 +27,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatInputModule,
     MatExpansionModule,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatProgressBarModule
   ],
   exports: [
     CommonModule,
@@ -45,7 +46,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatInputModule,
     MatExpansionModule,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatProgressBarModule
   ]
 })
 export class MaterialModule {
