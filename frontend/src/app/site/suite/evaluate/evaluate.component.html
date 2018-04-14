@@ -1,0 +1,177 @@
+<mat-card>
+  <mat-card-title>Evaluate</mat-card-title>
+  <mat-card-content>
+    <div fxLayout="column">
+      <mat-form-field>
+        <textarea [(ngModel)]="query" matInput rows="10" placeholder="Enter an Indri query..."></textarea>
+      </mat-form-field>
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="space-between end">
+      <button [disabled]="!query.length || !queryId.length" (click)="search()" mat-raised-button
+              color="primary">EVALUATE
+      </button>
+
+      <mat-form-field fxFlex="20">
+        <input matTooltip="The query id should be just a number." [(ngModel)]="queryId" matInput placeholder="Query Id">
+        <mat-hint align="start"><strong>This is the query we try to optimize for.</strong></mat-hint>
+      </mat-form-field>
+    </div>
+
+  </mat-card-content>
+</mat-card>
+
+<div class="results" *ngIf="searchInProgress">
+
+  <mat-card *ngIf="error">
+    <mat-card-subtitle>
+      Error: Could not get results.
+    </mat-card-subtitle>
+    <mat-card-content fxLayout="row" fxLayoutAlign="center center">
+      <pre>{{error}}</pre>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="!results && !error">
+    <mat-card-content fxLayout="row" fxLayoutAlign="center center">
+      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-accordion *ngIf="results" multi="true">
+    <mat-expansion-panel expanded="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Scores
+        </mat-panel-title>
+        <mat-panel-description>
+          Statistics about this query.
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <div class="statistics" fxFlex="100">
+        <div fxLayout="row" fxLayoutAlign="space-between stretch">
+          <span fxFlex="60">Total number of retrieved documents [num_ret]</span><strong
+          fxFlex>{{results.eval.num_ret}}</strong></div>
+        <div fxLayout="row" fxLayoutAlign="space-between stretch"><span fxFlex="60">Total number of relevant documents (according to the qrels file) [num_rel]</span><strong
+          fxFlex>{{results.eval.num_rel}}</strong></div>
+        <div fxLayout="row" fxLayoutAlign="space-between stretch"><span fxFlex="60">Total number of relevant documents retrieved (in the results file) [num_rel_ret]</span><strong
+          fxFlex>{{results.eval.num_rel_ret}}</strong></div>
+        <div fxLayout="row" fxLayoutAlign="space-between stretch"><span
+          fxFlex="60">Mean average precision [map]</span><strong fxFlex>{{results.eval.map}}</strong></div>
+        <div fxLayout="row" fxLayoutAlign="space-between stretch"><span fxFlex="60">Precision of the first R documents, where R are the number of relevants [Rprec]</span><strong
+          fxFlex>{{results.eval.Rprec}}</strong></div>
+        <div fxLayout="row" fxLayoutAlign="space-between stretch"><span
+          fxFlex="60">Binary preference [bpref]</span><strong fxFlex>{{results.eval.bpref}}</strong></div>
+        <div fxLayout="row" fxLayoutAlign="space-between stretch"><span
+          fxFlex="60">Reciprical Rank [recip_rank]</span><strong fxFlex>{{results.eval.recip_rank}}</strong></div>
+        <br>
+        <div fxLayout="row" fxLayoutAlign="space-between stretch"><span
+          fxFlex="60">Number of relevant documents that are not present in our corpus</span><strong fxFlex>{{results.missing_relevant_documents.length}}</strong>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-md="column" fxLayoutAlign="space-between center">
+        <div class="charts" fxFlex="50%">
+          <ngx-charts-line-chart
+            xAxisLabel="Recall"
+            yAxisLabel="Precision"
+            xAxis="true"
+            yAxis="true"
+            showXAxisLabel="true"
+            showYAxisLabel="true"
+            autoScale="true"
+            [results]="recallData">
+          </ngx-charts-line-chart>
+        </div>
+
+        <div class="charts" fxFlex="50%">
+          <ngx-charts-line-chart
+            xAxisLabel="First n documents"
+            yAxisLabel="Precision"
+            xAxis="true"
+            yAxis="true"
+            showXAxisLabel="true"
+            showYAxisLabel="true"
+            autoScale="true"
+            [results]="precisionData">
+          </ngx-charts-line-chart>
+        </div>
+      </div>
+
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Wrongly Retrieved Documents
+        </mat-panel-title>
+        <mat-panel-description>
+          The first documents that were retrieved, but are not wanted.
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <app-data-table [dataSource]="results.retrieved_documents"></app-data-table>
+    </mat-expansion-panel>
+
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Relevant Retrieved Documents
+        </mat-panel-title>
+        <mat-panel-description>
+          All documents that we correctly retrieve.
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <app-data-table [dataSource]="results.relevant_retrieved"></app-data-table>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Relevant Documents
+        </mat-panel-title>
+        <mat-panel-description>
+          All relevant documents from the qrels file.
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <app-data-table [dataSource]="results.relevant_documents"></app-data-table>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Raw Output
+        </mat-panel-title>
+        <mat-panel-description>
+          The captured output from trec_eval.
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <pre>{{results.raw_eval_output}}</pre>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Missing Relevant Documents
+        </mat-panel-title>
+        <mat-panel-description>
+          The document ids of relevant documents that can not be found in our corpus :(
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <ul>
+        <li *ngFor="let doc_id of results.missing_relevant_documents">{{doc_id}}}</li>
+      </ul>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+
+
+

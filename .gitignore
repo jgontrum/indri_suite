@@ -96,3 +96,6 @@ ENV/
 .swp
 .swo
 .idea/
+
+.DS_Store
+._*

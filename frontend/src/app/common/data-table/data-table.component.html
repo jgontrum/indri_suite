@@ -1,0 +1,25 @@
+<mat-table *ngIf="dataSource.length" [dataSource]="dataSource">
+
+  <!-- Document Column -->
+  <ng-container matColumnDef="document_id">
+    <mat-header-cell *matHeaderCellDef fxFlex>Document</mat-header-cell>
+    <mat-cell *matCellDef="let element" fxFlex>{{element.document_id}}</mat-cell>
+  </ng-container>
+
+  <!-- Score Column -->
+  <ng-container matColumnDef="view">
+    <mat-header-cell *matHeaderCellDef fxFlex="10%"></mat-header-cell>
+    <mat-cell *matCellDef="let element;" fxLayout="row" fxLayoutAlign="end center" fxFlex="10%">
+      <mat-icon>receipt</mat-icon>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="['document_id', 'view']"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: ['document_id', 'view']; let index = index"
+           (click)="insertComponent(index)"
+           #tableRow
+           matRipple></mat-row>
+</mat-table>
+<div *ngIf="!dataSource.length">
+  No data available.
+</div>

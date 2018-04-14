@@ -1,0 +1,31 @@
+<mat-card>
+  <mat-card-title>Settings</mat-card-title>
+  <mat-card-subtitle>
+    Please enter the absolute file paths to the index folder,
+    the extracted corpus and the gold file to evaluate the
+    search results against.
+  </mat-card-subtitle>
+
+  <mat-card-content>
+    <div fxLayout="column">
+      <mat-form-field>
+        <input matInput [(ngModel)]="corpusPath"
+               placeholder="Path to the extracted corpus, e.g.: /nobackup/user/ir/lab2/GH95/">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="indexPath"
+               placeholder="Path to the created index, e.g.: /nobackup/user/ir/lab2/GH95_index/">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="goldPath"
+               placeholder="Path to file containing the 'qrels' that we test against, e.g.: /nobackup/user/ir/lab2/AH-ENGLISH-CLEF2006.txt">
+      </mat-form-field>
+    </div>
+    <button [disabled]="!(corpusPath.length && indexPath.length && goldPath.length)" (click)="save()" mat-raised-button
+            color="primary">SAVE
+    </button>
+
+  </mat-card-content>
+</mat-card>

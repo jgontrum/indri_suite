@@ -1,0 +1,25 @@
+<nav mat-tab-nav-bar>
+  <a mat-tab-link
+     routerLink="/"
+     [active]="routeIsActive(['/search'])"
+     *ngIf="this.configService.isConfigured === 'true'">
+    SEARCH
+  </a>
+
+  <a mat-tab-link
+     routerLink="/evaluate"
+     [active]="routeIsActive(['/evaluate'])"
+     *ngIf="this.configService.isConfigured === 'true'">
+    EVALUATE
+  </a>
+
+  <a mat-tab-link
+     routerLink="/settings"
+     [active]="routeIsActive(['/settings'])">
+    SETTINGS
+  </a>
+</nav>
+
+<app-main-container>
+  <router-outlet></router-outlet>
+</app-main-container>

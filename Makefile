@@ -24,5 +24,10 @@ start: env/bin/python
 update-all-packages: env/bin/python
 	 env/bin/pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 env/bin/pip install -U
 
-test: env/bin/python
-	env/bin/py.test --cov=indri_suite indri_suite_test -vv
+compile-frontend:
+	 cd frontend/
+	 make build
+	 cd ../
+	 rm static/*
+	 touch static/.gitkeep
+	 mv frontend/dist/* static/
