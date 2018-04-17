@@ -97,6 +97,10 @@ class TrecEvalClient:
             set([ref['document_id'] for ref in retrieved_documents])
         )
 
+        irrelevant_retrieved_documents = set(
+            [ref['document_id'] for ref in
+             retrieved_documents]) - gold_documents
+
         ret = {
             "raw_eval_output": eval_output.decode(),
             "eval": structured_output,
@@ -108,7 +112,14 @@ class TrecEvalClient:
             }
                 for doc_id in sorted(gold_documents)
             ],
-            "retrieved_documents": retrieved_documents,
+            "irrelevant_retrieved": [{
+                "document_id": doc_id,
+                "document": self.indri_client.lookup_document(
+                    self.indri_client.document_index.get(
+                        doc_id))
+            }
+                for doc_id in sorted(irrelevant_retrieved_documents)
+            ],
             "relevant_retrieved": [{
                 "document_id": doc_id,
                 "document": self.indri_client.lookup_document(

@@ -157,8 +157,8 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/DocumentReference'
-      retrieved_documents:
-        description: The first retrieved documents.
+      irrelevant_retrieved:
+        description: False Positives
         type: array
         items:
           $ref: '#/definitions/DocumentReference'
