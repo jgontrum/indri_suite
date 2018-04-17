@@ -3,21 +3,27 @@
   <mat-card-content>
     <div fxLayout="column">
       <mat-form-field>
-        <textarea [(ngModel)]="query" matInput rows="10" placeholder="Enter an Indri query..."></textarea>
+        <textarea [(ngModel)]="query" matInput rows="10" placeholder="Enter an Indri query..." (keyup.enter)="search()"></textarea>
       </mat-form-field>
     </div>
 
     <div fxLayout="row" fxLayoutAlign="space-between end">
-      <mat-form-field fxFlex="20">
-        <input matTooltip="The query id should be just a number." [(ngModel)]="queryId" matInput placeholder="Query Id">
-        <mat-hint align="start"><strong>This is the query we try to optimize for.</strong></mat-hint>
-      </mat-form-field>
+      <div fxLayout="row" fxFlex="20%">
+        <mat-form-field class="query-id-input">
+          <input matTooltip="The query id should be just a number." [(ngModel)]="queryId" matInput placeholder="Query Id">
+          <mat-hint align="start"><strong>This is the query we try to optimize for.</strong></mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matTooltip="Enter the full document id." [(ngModel)]="inspectDocument" (input)="updateInspectedDocument(inspectDocument)" matInput placeholder="Inspect Document Id">
+          <mat-hint align="start"><strong>The id of a document you try to optimize..</strong></mat-hint>
+        </mat-form-field>
+      </div>
 
       <button [disabled]="!query.length || !queryId.length" (click)="search()" mat-icon-button  mat-raised-button color="primary">
         <mat-icon aria-label="Search">search</mat-icon>
       </button>
     </div>
-
   </mat-card-content>
 
   <mat-card-footer>
@@ -27,8 +33,6 @@
       mode="query">
     </mat-progress-bar>
   </mat-card-footer>
-
-
 </mat-card>
 
 <div class="results" *ngIf="results || error">
@@ -43,14 +47,28 @@
   </mat-card>
 
   <mat-accordion *ngIf="results" multi="true">
+    <mat-expansion-panel expanded="true" *ngIf="inspectDocument">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Inspected Document: {{inspectDocument}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div *ngIf="!inspectDocumentData.text.length">
+        No document found.
+      </div>
+      <div *ngIf="inspectDocumentData.text.length">
+        Categories: <strong *ngFor="let category of inspectDocumentData.categories">{{category}}  </strong>
+        <app-document-viewer [document]="inspectDocumentData.text"></app-document-viewer>
+      </div>
+    </mat-expansion-panel>
+
+
     <mat-expansion-panel expanded="true">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Scores
         </mat-panel-title>
-        <mat-panel-description>
-          Statistics about this query.
-        </mat-panel-description>
       </mat-expansion-panel-header>
 
       <div class="mini-stats" fxFlex="100" fxLayout="row wrap" fxLayoutGap="25px" fxLayoutAlign="space-evenly stretch">
@@ -98,51 +116,39 @@
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
-          Wrongly Retrieved Documents
+          False Positives
         </mat-panel-title>
-        <mat-panel-description>
-          The first documents that were retrieved, but are not wanted.
-        </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <app-data-table [dataSource]="results.retrieved_documents"></app-data-table>
+      <app-data-table [dataSource]="results.irrelevant_retrieved" (inspect)="updateInspectedDocument($event)"></app-data-table>
     </mat-expansion-panel>
 
 
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
-          Relevant Retrieved Documents
+          True Positives
         </mat-panel-title>
-        <mat-panel-description>
-          All documents that we correctly retrieve.
-        </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <app-data-table [dataSource]="results.relevant_retrieved"></app-data-table>
+      <app-data-table [dataSource]="results.relevant_retrieved" (inspect)="updateInspectedDocument($event)"></app-data-table>
     </mat-expansion-panel>
 
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
-          Relevant Documents
+          All Gold Documents
         </mat-panel-title>
-        <mat-panel-description>
-          All relevant documents from the qrels file.
-        </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <app-data-table [dataSource]="results.relevant_documents"></app-data-table>
+      <app-data-table [dataSource]="results.relevant_documents" (inspect)="updateInspectedDocument($event)"></app-data-table>
     </mat-expansion-panel>
 
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
-          Raw Output
+          Raw Eval Output
         </mat-panel-title>
-        <mat-panel-description>
-          The captured output from trec_eval.
-        </mat-panel-description>
       </mat-expansion-panel-header>
 
       <pre>{{results.raw_eval_output}}</pre>
@@ -151,11 +157,8 @@
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
-          Missing Relevant Documents
+          Relevant Documents not present in Corpus
         </mat-panel-title>
-        <mat-panel-description>
-          The document ids of relevant documents that can not be found in our corpus :(
-        </mat-panel-description>
       </mat-expansion-panel-header>
 
       <ul>

@@ -10,7 +10,9 @@
   <ng-container matColumnDef="view">
     <mat-header-cell *matHeaderCellDef fxFlex="10%"></mat-header-cell>
     <mat-cell *matCellDef="let element;" fxLayout="row" fxLayoutAlign="end center" fxFlex="10%">
-      <mat-icon>receipt</mat-icon>
+      <button matTooltip="Inspect this document" mat-icon-button color="primary" (click)="inspect.emit(element.document_id)">
+        <mat-icon aria-label="Search">visibility</mat-icon>
+      </button>
     </mat-cell>
   </ng-container>
 

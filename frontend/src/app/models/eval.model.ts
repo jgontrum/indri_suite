@@ -36,5 +36,5 @@ export interface EvalResponse {
   missing_relevant_documents: string[];
   relevant_documents: DocumentReference[];
   relevant_retrieved: DocumentReference[];
-  retrieved_documents: DocumentReference[];
+  irrelevant_retrieved: DocumentReference[];
 }

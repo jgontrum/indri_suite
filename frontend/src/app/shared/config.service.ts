@@ -48,6 +48,19 @@ export class ConfigService {
     localStorage.setItem('indriEvalQueryId', value);
   }
 
+  static get evalInspectId(): string {
+    const ret = localStorage.getItem('indriEvalInspectId');
+    if (!ret) {
+      return '';
+    }
+    return ret;
+  }
+
+  static set evalInspectId(value: string) {
+    localStorage.setItem('indriEvalInspectId', value);
+  }
+
+
   static get searchQuery(): string {
     const ret = localStorage.getItem('indriSearchQuery');
     if (!ret) {

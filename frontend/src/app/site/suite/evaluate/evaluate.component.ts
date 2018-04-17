@@ -1,9 +1,9 @@
-import { Component, ComponentFactory, ComponentFactoryResolver, ViewChildren, ViewContainerRef } from '@angular/core';
-import { EvalResponse } from '../../../models/eval.model';
-import { BackendService } from '../../../shared/backend.service';
-import { InlineMessageComponent } from '../search/search.component';
-import { ConfigService } from '../../../shared/config.service';
-import { MatSnackBar } from '@angular/material';
+import {Component, ComponentFactory, ComponentFactoryResolver, ViewChildren, ViewContainerRef} from '@angular/core';
+import {EvalResponse} from '../../../models/eval.model';
+import {BackendService} from '../../../shared/backend.service';
+import {InlineMessageComponent} from '../search/search.component';
+import {ConfigService} from '../../../shared/config.service';
+import {MatSnackBar} from '@angular/material';
 
 @Component({
   selector: 'app-evaluate',
@@ -13,6 +13,11 @@ import { MatSnackBar } from '@angular/material';
 export class EvaluateComponent {
   query = ConfigService.evalQuery;
   queryId = ConfigService.evalQueryId;
+  inspectDocument = ConfigService.evalInspectId;
+  inspectDocumentData = {
+    text: '',
+    categories: []
+  };
   error = undefined;
   searchInProgress = false;
   results: EvalResponse;
@@ -38,18 +43,20 @@ export class EvaluateComponent {
     this.searchInProgress = true;
     ConfigService.evalQuery = this.query;
     ConfigService.evalQueryId = this.queryId;
+    ConfigService.evalInspectId = this.inspectDocument;
 
     this.backendService.getEvaluationResults(this.query, this.queryId).subscribe(
       (response: EvalResponse) => {
         this.results = response;
         this.error = undefined;
+
+        // Prepare data for the charts
         const recallData = [
           {
             'name': 'Recall',
             'series': []
           }
         ];
-
         for (let i = 0; i <= 10; i++) {
           recallData[0]['series'].push(
             {
@@ -58,7 +65,6 @@ export class EvaluateComponent {
             }
           );
         }
-
         this.recallData = recallData;
 
         const precisionData = [
@@ -67,7 +73,6 @@ export class EvaluateComponent {
             'series': []
           }
         ];
-
         for (const i of [5, 10, 15, 20, 30, 100, 200, 500, 1000]) {
           precisionData[0]['series'].push(
             {
@@ -76,8 +81,10 @@ export class EvaluateComponent {
             }
           );
         }
-
         this.precisionData = precisionData;
+
+        this.updateInspectedDocument(this.inspectDocument);
+
         this.snackBar.open('Evaluation updated.', 'OK', {duration: 2000});
         this.searchInProgress = false;
       },
@@ -89,6 +96,36 @@ export class EvaluateComponent {
         this.searchInProgress = false;
       }
     );
+  }
+
+  updateInspectedDocument(inspectDocument) {
+    this.inspectDocument = inspectDocument;
+    this.inspectDocumentData = {
+      text: '',
+      categories: []
+    };
+
+    // Search for inspected document
+    if (inspectDocument && this.results) {
+      const lookup = {
+        'False Positives': this.results.irrelevant_retrieved,
+        'True Positives': this.results.relevant_retrieved,
+        'All relevant documents': this.results.relevant_documents
+      };
+
+      for (const [category, documents] of Object.entries(lookup)) {
+        for (const document of documents) {
+          if (document.document_id === inspectDocument.trim()) {
+            this.inspectDocumentData.text = document.document;
+            this.inspectDocumentData.categories.push(category);
+          }
+        }
+      }
+
+      if (this.inspectDocumentData.categories.length === 2) {
+        this.inspectDocumentData.categories = ['True Positives'];
+      }
+    }
   }
 
 
@@ -124,7 +161,7 @@ export class EvaluateComponent {
     }
   }
 
-  insertComponentForRetrievedDocuments(index: number) {
+  insertComponentForIrrelevantRetrievedDocuments(index: number) {
     if (this.expandedRowRetrievedDocuments != null) {
       this.rowContainersRetrievedDocuments.toArray()[this.expandedRowRetrievedDocuments].clear();
     }
@@ -135,7 +172,7 @@ export class EvaluateComponent {
       const container = this.rowContainersRetrievedDocuments.toArray()[index];
       const factory: ComponentFactory<any> = this.resolver.resolveComponentFactory(InlineMessageComponent);
       const inlineComponent = container.createComponent(factory);
-      inlineComponent.instance.document = this.results.retrieved_documents[index].document;
+      inlineComponent.instance.document = this.results.irrelevant_retrieved[index].document;
       this.expandedRowRetrievedDocuments = index;
     }
   }
