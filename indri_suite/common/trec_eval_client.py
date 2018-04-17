@@ -120,7 +120,7 @@ class TrecEvalClient:
                     self.indri_client.document_index.get(
                         doc_id))
             }
-                for doc_id in sorted(irrelevant_retrieved_documents[:30])
+                for doc_id in sorted(irrelevant_retrieved_documents)[:30]
             ],
             "relevant_retrieved": [{
                 "document_id": doc_id,
