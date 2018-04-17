@@ -79,10 +79,10 @@
       <div class="mini-stats" fxFlex="100" fxLayout="row wrap" fxLayoutGap="25px" fxLayoutAlign="space-evenly center">
         <app-mini-stat matTooltip="Mean average precision [map]" label="Mean Precision" [oldValue]="oldResults.eval.map" [value]="results.eval.map"></app-mini-stat>
         <app-mini-stat matTooltip="Precision of the first R documents, where R are the number of relevants [Rprec]" label="R-Precision" [oldValue]="oldResults.eval.Rprec" [value]="results.eval.Rprec"></app-mini-stat>
-        <app-mini-stat matTooltip="Binary preference [bpref]" label="Binary preference" [oldValue]="oldResults.eval.bpref" [value]="results.eval.bpref"></app-mini-stat>
+        <app-mini-stat matTooltip="Binary preference [bpref]" label="Binary Preference" [oldValue]="oldResults.eval.bpref" [value]="results.eval.bpref"></app-mini-stat>
         <app-mini-stat matTooltip="Total number of retrieved documents [num_ret]" label="Retrieved Documents" [oldValue]="oldResults.eval.num_ret" [value]="results.eval.num_ret"></app-mini-stat>
         <app-mini-stat matTooltip="Total number of relevant documents retrieved (in the results file) [num_rel_ret]" label="Relevant Retrieved" [oldValue]="oldResults.eval.num_rel_ret" [value]="results.eval.num_rel_ret"></app-mini-stat>
-        <app-mini-stat matTooltip="Number of relevant documents that can actually be retrieved, as not all relevant documents are in the corpus." label="Max. possible relevant Documents" [value]="results.eval.num_rel - results.missing_relevant_documents.length"></app-mini-stat>
+        <app-mini-stat matTooltip="Number of relevant documents that can actually be retrieved, as not all relevant documents are in the corpus." label="Max. Relevant" [value]="results.eval.num_rel - results.missing_relevant_documents.length"></app-mini-stat>
         <app-mini-stat matTooltip="Total number of relevant documents (according to the qrels file) [num_rel]" label="Relevant Documents" [value]="results.eval.num_rel"></app-mini-stat>
       </div>
 

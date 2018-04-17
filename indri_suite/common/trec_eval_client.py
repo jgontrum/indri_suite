@@ -84,13 +84,11 @@ class TrecEvalClient:
         retrieved_documents = [{
             "document_id": doc_id,
             "score": score,
-            "index": i,
-            "document": self.indri_client.lookup_document(
-                self.indri_client.document_index[doc_id])
+            "index": i
         } for i, (doc_id, score) in enumerate(
             list(
                 self._get_retrieved_documents(
-                    query_output.decode(), query_id))[:30])
+                    query_output.decode(), query_id)))
         ]
 
         relevant_retrieved_documents = gold_documents.intersection(
@@ -122,7 +120,7 @@ class TrecEvalClient:
                     self.indri_client.document_index.get(
                         doc_id))
             }
-                for doc_id in sorted(irrelevant_retrieved_documents)
+                for doc_id in sorted(irrelevant_retrieved_documents[:30])
             ],
             "relevant_retrieved": [{
                 "document_id": doc_id,
