@@ -41,11 +41,13 @@ export class SearchComponent {
       (response: SearchResults) => {
         this.results = response;
         this.error = undefined;
+        this.searchInProgress = false;
       },
       (error) => {
         console.log(error);
         this.error = error.error;
         this.results = undefined;
+        this.searchInProgress = false;
       });
   }
 

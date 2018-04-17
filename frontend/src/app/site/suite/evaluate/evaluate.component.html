@@ -8,20 +8,30 @@
     </div>
 
     <div fxLayout="row" fxLayoutAlign="space-between end">
-      <button [disabled]="!query.length || !queryId.length" (click)="search()" mat-raised-button
-              color="primary">EVALUATE
-      </button>
-
       <mat-form-field fxFlex="20">
         <input matTooltip="The query id should be just a number." [(ngModel)]="queryId" matInput placeholder="Query Id">
         <mat-hint align="start"><strong>This is the query we try to optimize for.</strong></mat-hint>
       </mat-form-field>
+
+      <button [disabled]="!query.length || !queryId.length" (click)="search()" mat-icon-button  mat-raised-button color="primary">
+        <mat-icon aria-label="Search">search</mat-icon>
+      </button>
     </div>
 
   </mat-card-content>
+
+  <mat-card-footer>
+    <mat-progress-bar
+      *ngIf="searchInProgress"
+      color="primary"
+      mode="query">
+    </mat-progress-bar>
+  </mat-card-footer>
+
+
 </mat-card>
 
-<div class="results" *ngIf="searchInProgress">
+<div class="results" *ngIf="results || error">
 
   <mat-card *ngIf="error">
     <mat-card-subtitle>
@@ -29,12 +39,6 @@
     </mat-card-subtitle>
     <mat-card-content fxLayout="row" fxLayoutAlign="center center">
       <pre>{{error}}</pre>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card *ngIf="!results && !error">
-    <mat-card-content fxLayout="row" fxLayoutAlign="center center">
-      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
     </mat-card-content>
   </mat-card>
 
@@ -49,26 +53,14 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <div class="statistics" fxFlex="100">
-        <div fxLayout="row" fxLayoutAlign="space-between stretch">
-          <span fxFlex="60">Total number of retrieved documents [num_ret]</span><strong
-          fxFlex>{{results.eval.num_ret}}</strong></div>
-        <div fxLayout="row" fxLayoutAlign="space-between stretch"><span fxFlex="60">Total number of relevant documents (according to the qrels file) [num_rel]</span><strong
-          fxFlex>{{results.eval.num_rel}}</strong></div>
-        <div fxLayout="row" fxLayoutAlign="space-between stretch"><span fxFlex="60">Total number of relevant documents retrieved (in the results file) [num_rel_ret]</span><strong
-          fxFlex>{{results.eval.num_rel_ret}}</strong></div>
-        <div fxLayout="row" fxLayoutAlign="space-between stretch"><span
-          fxFlex="60">Mean average precision [map]</span><strong fxFlex>{{results.eval.map}}</strong></div>
-        <div fxLayout="row" fxLayoutAlign="space-between stretch"><span fxFlex="60">Precision of the first R documents, where R are the number of relevants [Rprec]</span><strong
-          fxFlex>{{results.eval.Rprec}}</strong></div>
-        <div fxLayout="row" fxLayoutAlign="space-between stretch"><span
-          fxFlex="60">Binary preference [bpref]</span><strong fxFlex>{{results.eval.bpref}}</strong></div>
-        <div fxLayout="row" fxLayoutAlign="space-between stretch"><span
-          fxFlex="60">Reciprical Rank [recip_rank]</span><strong fxFlex>{{results.eval.recip_rank}}</strong></div>
-        <br>
-        <div fxLayout="row" fxLayoutAlign="space-between stretch"><span
-          fxFlex="60">Number of relevant documents that are not present in our corpus</span><strong fxFlex>{{results.missing_relevant_documents.length}}</strong>
-        </div>
+      <div class="mini-stats" fxFlex="100" fxLayout="row wrap" fxLayoutGap="25px" fxLayoutAlign="space-evenly stretch">
+        <app-mini-stat matTooltip="Mean average precision [map]" label="Mean Precision" [value]="results.eval.map"></app-mini-stat>
+        <app-mini-stat matTooltip="Precision of the first R documents, where R are the number of relevants [Rprec]" label="R-Precision" [value]="results.eval.Rprec"></app-mini-stat>
+        <app-mini-stat matTooltip="Binary preference [bpref]" label="Binary preference" [value]="results.eval.bpref"></app-mini-stat>
+        <app-mini-stat matTooltip="Total number of retrieved documents [num_ret]" label="Retrieved Documents" [value]="results.eval.num_ret"></app-mini-stat>
+        <app-mini-stat matTooltip="Total number of relevant documents (according to the qrels file) [num_rel]"  label="Relevant Documents" [value]="results.eval.num_rel"></app-mini-stat>
+        <app-mini-stat matTooltip="Total number of relevant documents retrieved (in the results file) [num_rel_ret]" label="Relevant Retrieved" [value]="results.eval.num_rel_ret"></app-mini-stat>
+        <app-mini-stat matTooltip="Number of relevant documents that are not present in our corpus" label="Invalid Gold Documents" [value]="results.missing_relevant_documents.length"></app-mini-stat>
       </div>
 
       <mat-divider></mat-divider>

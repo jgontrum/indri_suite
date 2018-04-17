@@ -4,6 +4,7 @@ import { MaterialModule } from './material.module';
 import { DocumentViewerComponent } from './document-viewer/document-viewer.component';
 import { DataTableComponent } from './data-table/data-table.component';
 import { CommonModule } from '@angular/common';
+import { MiniStatComponent } from './mini-stat/mini-stat.component';
 
 
 @NgModule({
@@ -14,12 +15,14 @@ import { CommonModule } from '@angular/common';
   declarations: [
     MainContainerComponent,
     DocumentViewerComponent,
-    DataTableComponent
+    DataTableComponent,
+    MiniStatComponent
   ],
   exports: [
     MainContainerComponent,
     DocumentViewerComponent,
-    DataTableComponent
+    DataTableComponent,
+    MiniStatComponent
   ]
 })
 export class CommonModules {

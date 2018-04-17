@@ -41,7 +41,6 @@ export class EvaluateComponent {
 
     this.backendService.getEvaluationResults(this.query, this.queryId).subscribe(
       (response: EvalResponse) => {
-        this.snackBar.open('Evaluation updated.', 'OK', {duration: 2000});
         this.results = response;
         this.error = undefined;
         const recallData = [
@@ -79,11 +78,15 @@ export class EvaluateComponent {
         }
 
         this.precisionData = precisionData;
+        this.snackBar.open('Evaluation updated.', 'OK', {duration: 2000});
+        this.searchInProgress = false;
       },
       (error) => {
         console.log(error);
         this.error = error.error;
         this.results = undefined;
+
+        this.searchInProgress = false;
       }
     );
   }
