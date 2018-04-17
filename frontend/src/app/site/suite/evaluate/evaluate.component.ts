@@ -1,10 +1,6 @@
-import {
-  Component, ComponentFactory, ComponentFactoryResolver, ViewChildren,
-  ViewContainerRef
-} from '@angular/core';
+import { Component } from '@angular/core';
 import { EvalResponse } from '../../../models/eval.model';
 import { BackendService } from '../../../shared/backend.service';
-import { InlineMessageComponent } from '../search/search.component';
 import { ConfigService } from '../../../shared/config.service';
 import { MatSnackBar } from '@angular/material';
 import { UistateService } from '../../../shared/uistate.service';
@@ -34,18 +30,8 @@ export class EvaluateComponent {
   recallData: any;
   precisionData: any;
 
-  @ViewChildren('tableRow', {read: ViewContainerRef}) rowContainersRelevantDocuments;
-  expandedRowRelevantDocuments: number;
-
-  @ViewChildren('tableRow', {read: ViewContainerRef}) rowContainersRelevantRetrievedDocuments;
-  expandedRowRelevantRetrievedDocuments: number;
-
-  @ViewChildren('tableRow', {read: ViewContainerRef}) rowContainersRetrievedDocuments;
-  expandedRowRetrievedDocuments: number;
-
   constructor(private backendService: BackendService,
               private uistateService: UistateService,
-              private resolver: ComponentFactoryResolver,
               public snackBar: MatSnackBar) {
   }
 
@@ -136,6 +122,7 @@ export class EvaluateComponent {
     if (inspectDocument && this.results) {
       const lookup = {
         'False Positives': this.results.irrelevant_retrieved,
+        'False Negatives': this.results.relevant_not_retrieved,
         'True Positives': this.results.relevant_retrieved,
         'All relevant documents': this.results.relevant_documents
       };
@@ -149,58 +136,9 @@ export class EvaluateComponent {
         }
       }
 
-      if (this.inspectDocumentData.categories.length === 2) {
-        this.inspectDocumentData.categories = ['True Positives'];
-      }
-    }
-  }
-
-
-  insertComponentForRelevantDocuments(index: number) {
-    if (this.expandedRowRelevantDocuments != null) {
-      this.rowContainersRelevantDocuments.toArray()[this.expandedRowRelevantDocuments].clear();
-    }
-
-    if (this.expandedRowRelevantDocuments === index) {
-      this.expandedRowRelevantDocuments = null;
-    } else {
-      const container = this.rowContainersRelevantDocuments.toArray()[index];
-      const factory: ComponentFactory<any> = this.resolver.resolveComponentFactory(InlineMessageComponent);
-      const inlineComponent = container.createComponent(factory);
-      inlineComponent.instance.document = this.results.relevant_documents[index].document;
-      this.expandedRowRelevantDocuments = index;
-    }
-  }
-
-  insertComponentForRelevantRetrievedDocuments(index: number) {
-    if (this.expandedRowRelevantRetrievedDocuments != null) {
-      this.rowContainersRelevantRetrievedDocuments.toArray()[this.expandedRowRelevantRetrievedDocuments].clear();
-    }
-
-    if (this.expandedRowRelevantRetrievedDocuments === index) {
-      this.expandedRowRelevantRetrievedDocuments = null;
-    } else {
-      const container = this.rowContainersRelevantRetrievedDocuments.toArray()[index];
-      const factory: ComponentFactory<any> = this.resolver.resolveComponentFactory(InlineMessageComponent);
-      const inlineComponent = container.createComponent(factory);
-      inlineComponent.instance.document = this.results.relevant_retrieved[index].document;
-      this.expandedRowRelevantRetrievedDocuments = index;
-    }
-  }
-
-  insertComponentForIrrelevantRetrievedDocuments(index: number) {
-    if (this.expandedRowRetrievedDocuments != null) {
-      this.rowContainersRetrievedDocuments.toArray()[this.expandedRowRetrievedDocuments].clear();
-    }
-
-    if (this.expandedRowRelevantDocuments === index) {
-      this.expandedRowRetrievedDocuments = null;
-    } else {
-      const container = this.rowContainersRetrievedDocuments.toArray()[index];
-      const factory: ComponentFactory<any> = this.resolver.resolveComponentFactory(InlineMessageComponent);
-      const inlineComponent = container.createComponent(factory);
-      inlineComponent.instance.document = this.results.irrelevant_retrieved[index].document;
-      this.expandedRowRetrievedDocuments = index;
+      // if (this.inspectDocumentData.categories.length === 2) {
+      //   this.inspectDocumentData.categories = ['True Positives'];
+      // }
     }
   }
 

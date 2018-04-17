@@ -37,4 +37,5 @@ export interface EvalResponse {
   relevant_documents?: DocumentReference[];
   relevant_retrieved?: DocumentReference[];
   irrelevant_retrieved?: DocumentReference[];
+  relevant_not_retrieved?: DocumentReference[];
 }

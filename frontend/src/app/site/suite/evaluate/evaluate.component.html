@@ -128,6 +128,15 @@
       <app-data-table [dataSource]="results.irrelevant_retrieved" (inspect)="updateInspectedDocument($event)"></app-data-table>
     </mat-expansion-panel>
 
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          False Negatives
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <app-data-table [dataSource]="results.relevant_not_retrieved" (inspect)="updateInspectedDocument($event)"></app-data-table>
+    </mat-expansion-panel>
 
     <mat-expansion-panel>
       <mat-expansion-panel-header>
