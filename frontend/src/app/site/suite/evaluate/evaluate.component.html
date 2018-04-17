@@ -51,7 +51,7 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-accordion *ngIf="results" multi="true">
+  <mat-accordion *ngIf="results.raw_eval_output" multi="true">
     <mat-expansion-panel expanded="true" *ngIf="inspectDocument">
       <mat-expansion-panel-header>
         <mat-panel-title>

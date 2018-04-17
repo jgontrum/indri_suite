@@ -94,7 +94,9 @@ export class EvaluateComponent {
       (error) => {
         console.log(error);
         this.error = error.error;
-        this.results = undefined;
+        this.results = {
+          eval: {}
+        };
 
         this.searchInProgress = false;
       }
@@ -124,7 +126,7 @@ export class EvaluateComponent {
         'False Positives': this.results.irrelevant_retrieved,
         'False Negatives': this.results.relevant_not_retrieved,
         'True Positives': this.results.relevant_retrieved,
-        'All relevant documents': this.results.relevant_documents
+        'True Negatives': this.results.relevant_documents
       };
 
       for (const [category, documents] of Object.entries(lookup)) {
@@ -136,9 +138,10 @@ export class EvaluateComponent {
         }
       }
 
-      // if (this.inspectDocumentData.categories.length === 2) {
-      //   this.inspectDocumentData.categories = ['True Positives'];
-      // }
+      if (this.inspectDocumentData.categories.length === 2) {
+        this.inspectDocumentData.categories = [
+          this.inspectDocumentData.categories[0]];
+      }
     }
   }
 
