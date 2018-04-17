@@ -3,7 +3,7 @@
   <mat-card-content>
     <div fxLayout="column">
       <mat-form-field>
-        <textarea [(ngModel)]="query" matInput rows="10" placeholder="Enter an Indri query..." (keyup.enter)="search()"></textarea>
+        <textarea [(ngModel)]="query" matInput matTextareaAutosize placeholder="Enter an Indri query..."></textarea>
       </mat-form-field>
     </div>
 
@@ -40,7 +40,7 @@
   </mat-card-footer>
 </mat-card>
 
-<div class="results" *ngIf="results || error">
+<div class="results" *ngIf="results.raw_eval_output || error">
 
   <mat-card *ngIf="error">
     <mat-card-subtitle>
@@ -76,14 +76,14 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <div class="mini-stats" fxFlex="100" fxLayout="row wrap" fxLayoutGap="25px" fxLayoutAlign="space-evenly stretch">
-        <app-mini-stat matTooltip="Mean average precision [map]" label="Mean Precision" [value]="results.eval.map"></app-mini-stat>
-        <app-mini-stat matTooltip="Precision of the first R documents, where R are the number of relevants [Rprec]" label="R-Precision" [value]="results.eval.Rprec"></app-mini-stat>
-        <app-mini-stat matTooltip="Binary preference [bpref]" label="Binary preference" [value]="results.eval.bpref"></app-mini-stat>
-        <app-mini-stat matTooltip="Total number of retrieved documents [num_ret]" label="Retrieved Documents" [value]="results.eval.num_ret"></app-mini-stat>
-        <app-mini-stat matTooltip="Total number of relevant documents (according to the qrels file) [num_rel]"  label="Relevant Documents" [value]="results.eval.num_rel"></app-mini-stat>
-        <app-mini-stat matTooltip="Total number of relevant documents retrieved (in the results file) [num_rel_ret]" label="Relevant Retrieved" [value]="results.eval.num_rel_ret"></app-mini-stat>
+      <div class="mini-stats" fxFlex="100" fxLayout="row wrap" fxLayoutGap="25px" fxLayoutAlign="space-evenly center">
+        <app-mini-stat matTooltip="Mean average precision [map]" label="Mean Precision" [oldValue]="oldResults.eval.map" [value]="results.eval.map"></app-mini-stat>
+        <app-mini-stat matTooltip="Precision of the first R documents, where R are the number of relevants [Rprec]" label="R-Precision" [oldValue]="oldResults.eval.Rprec" [value]="results.eval.Rprec"></app-mini-stat>
+        <app-mini-stat matTooltip="Binary preference [bpref]" label="Binary preference" [oldValue]="oldResults.eval.bpref" [value]="results.eval.bpref"></app-mini-stat>
+        <app-mini-stat matTooltip="Total number of retrieved documents [num_ret]" label="Retrieved Documents" [oldValue]="oldResults.eval.num_ret" [value]="results.eval.num_ret"></app-mini-stat>
+        <app-mini-stat matTooltip="Total number of relevant documents retrieved (in the results file) [num_rel_ret]" label="Relevant Retrieved" [oldValue]="oldResults.eval.num_rel_ret" [value]="results.eval.num_rel_ret"></app-mini-stat>
         <app-mini-stat matTooltip="Number of relevant documents that are not present in our corpus" label="Invalid Gold Documents" [value]="results.missing_relevant_documents.length"></app-mini-stat>
+        <app-mini-stat matTooltip="Total number of relevant documents (according to the qrels file) [num_rel]" label="Relevant Documents" [value]="results.eval.num_rel"></app-mini-stat>
       </div>
 
       <mat-divider></mat-divider>

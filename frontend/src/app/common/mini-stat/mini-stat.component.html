@@ -1,8 +1,13 @@
-<div fxLayout="column" fxLayoutAlign="center center">
-  <div fxLayout="row" class="value">
+<div fxLayout="column" fxLayoutAlign="space-between stretch">
+  <div fxLayout="row" fxLayoutAlign="center start" class="value">
     {{value}}
   </div>
-  <div fxLayout="row" class="label">
+  <div fxLayout="row" fxLayoutAlign="center stretch" class="diff"
+       *ngIf="oldValue !== undefined"
+       [ngStyle]="{'color': (value - oldValue) >= 0 ? 'green' : 'red'}">
+    <span *ngIf="(value - oldValue) >= 0">+</span>{{value - oldValue}}
+  </div>
+  <div fxLayout="row" fxLayoutAlign="center end" class="label">
     {{label}}
   </div>
 </div>

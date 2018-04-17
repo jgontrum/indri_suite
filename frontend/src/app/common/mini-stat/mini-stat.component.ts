@@ -8,6 +8,7 @@ import { Component, Input } from '@angular/core';
 export class MiniStatComponent {
   @Input() label: string;
   @Input() value: number;
+  @Input() oldValue: number;
 
   constructor() {
   }

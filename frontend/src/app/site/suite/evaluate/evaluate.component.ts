@@ -25,7 +25,11 @@ export class EvaluateComponent {
   error = undefined;
   searchInProgress = false;
   highlighting = true;
-  results: EvalResponse;
+  results: EvalResponse = {
+    eval: {}
+  };
+
+  oldResults: EvalResponse;
 
   recallData: any;
   precisionData: any;
@@ -45,6 +49,10 @@ export class EvaluateComponent {
               public snackBar: MatSnackBar) {
   }
 
+  static extractSearchTerms(query: string): string {
+    return query.replace(/#\w+/g, '').match(/\w+/g).join('|');
+  }
+
   search() {
     this.searchInProgress = true;
     ConfigService.evalQuery = this.query;
@@ -53,6 +61,7 @@ export class EvaluateComponent {
 
     this.backendService.getEvaluationResults(this.query, this.queryId).subscribe(
       (response: EvalResponse) => {
+        this.oldResults = this.results;
         this.results = response;
         this.error = undefined;
 
@@ -104,19 +113,16 @@ export class EvaluateComponent {
         this.searchInProgress = false;
       }
     );
+    return false;
   }
 
   changeHighlighting() {
     if (this.highlighting) {
-      this.uistateService.highlight = this.extractSearchTerms(
+      this.uistateService.highlight = EvaluateComponent.extractSearchTerms(
         this.query);
     } else {
       this.uistateService.highlight = '';
     }
-  }
-
-  extractSearchTerms(query: string): string {
-    return query.replace(/#\w+/g, '').match(/\w+/g).join('|');
   }
 
   updateInspectedDocument(inspectDocument) {
