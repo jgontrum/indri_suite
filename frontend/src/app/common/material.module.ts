@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  MatAutocompleteModule, MatButtonModule, MatButtonToggleModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule,
-  MatDividerModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule,
-  MatProgressBarModule, MatProgressSpinnerModule, MatSelectModule, MatSidenavModule, MatSlideToggleModule, MatSnackBarModule,
+  MatButtonModule, MatCardModule, MatDividerModule, MatExpansionModule,
+  MatFormFieldModule, MatIconModule, MatInputModule, MatPaginatorModule,
+  MatProgressBarModule, MatProgressSpinnerModule, MatSnackBarModule,
   MatTableModule, MatToolbarModule, MatTooltipModule
 } from '@angular/material';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -28,7 +29,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatExpansionModule,
     MatSnackBarModule,
     MatTooltipModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatCheckboxModule
   ],
   exports: [
     CommonModule,
@@ -47,7 +49,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatExpansionModule,
     MatSnackBarModule,
     MatTooltipModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatCheckboxModule
   ]
 })
 export class MaterialModule {

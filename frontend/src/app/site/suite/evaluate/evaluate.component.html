@@ -18,6 +18,11 @@
           <input matTooltip="Enter the full document id." [(ngModel)]="inspectDocument" (input)="updateInspectedDocument(inspectDocument)" matInput placeholder="Inspect Document Id">
           <mat-hint align="start"><strong>The id of a document you try to optimize..</strong></mat-hint>
         </mat-form-field>
+
+        <div fxLayoutAlign="center center">
+          <mat-checkbox [(ngModel)]="highlighting" (change)="changeHighlighting()">Highlight Results</mat-checkbox>
+        </div>
+
       </div>
 
       <button [disabled]="!query.length || !queryId.length" (click)="search()" mat-icon-button  mat-raised-button color="primary">

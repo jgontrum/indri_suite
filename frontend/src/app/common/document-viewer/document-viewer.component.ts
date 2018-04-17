@@ -1,17 +1,37 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
+import { UistateService } from '../../shared/uistate.service';
 
 @Component({
   selector: 'app-document-viewer',
   templateUrl: './document-viewer.component.html',
   styleUrls: ['./document-viewer.component.styl']
 })
-export class DocumentViewerComponent implements OnInit {
+export class DocumentViewerComponent implements OnChanges {
   @Input() document: string;
+  showDocument = '';
 
-  constructor() {
+  constructor(private uistateService: UistateService) {
   }
 
-  ngOnInit() {
+  ngOnChanges() {
+    this.updateHighlighting();
+    this.uistateService.highlightUpdated.subscribe(
+      (highlight) => {
+        this.updateHighlighting();
+      }
+    );
+  }
+
+  updateHighlighting() {
+    if (this.uistateService.highlight) {
+      const doc = this.document;
+
+      this.showDocument = doc.replace(new RegExp(this.uistateService.highlight, 'gi'), match => {
+        return '<span style="background-color: yellow">' + match + '</span>';
+      });
+    } else {
+      this.showDocument = this.document;
+    }
   }
 
 }

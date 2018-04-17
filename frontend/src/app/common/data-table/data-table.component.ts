@@ -1,9 +1,9 @@
 import {
-  Component, ComponentFactory, ComponentFactoryResolver, EventEmitter, Input, Output, ViewChildren,
-  ViewContainerRef
+  Component, ComponentFactory, ComponentFactoryResolver, EventEmitter,
+  Input, Output, ViewChildren, ViewContainerRef
 } from '@angular/core';
-import {DocumentReference} from '../../models/search.model';
-import {InlineMessageComponent} from '../../site/suite/search/search.component';
+import { DocumentReference } from '../../models/search.model';
+import { InlineMessageComponent } from '../../site/suite/search/search.component';
 
 @Component({
   selector: 'app-data-table',

@@ -5,6 +5,7 @@ import { DocumentViewerComponent } from './document-viewer/document-viewer.compo
 import { DataTableComponent } from './data-table/data-table.component';
 import { CommonModule } from '@angular/common';
 import { MiniStatComponent } from './mini-stat/mini-stat.component';
+import { SafehtmlPipe } from './safehtml.pipe';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { MiniStatComponent } from './mini-stat/mini-stat.component';
     MainContainerComponent,
     DocumentViewerComponent,
     DataTableComponent,
-    MiniStatComponent
+    MiniStatComponent,
+    SafehtmlPipe
   ],
   exports: [
     MainContainerComponent,

@@ -9,7 +9,6 @@ import { ConfigService } from './config.service';
   imports: [
     CommonModule
   ],
-  declarations: [],
   providers: [
     BackendService,
     UistateService,

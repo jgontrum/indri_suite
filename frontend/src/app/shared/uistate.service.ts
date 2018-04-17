@@ -1,10 +1,23 @@
-import {Injectable} from '@angular/core';
-import {Router} from '@angular/router';
+import { EventEmitter, Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 
 @Injectable()
 export class UistateService {
+  highlightUpdated: EventEmitter<string> = new EventEmitter();
+
   constructor(private router: Router) {
+  }
+
+  private _highlight = '';
+
+  get highlight(): string {
+    return this._highlight;
+  }
+
+  set highlight(value: string) {
+    this._highlight = value;
+    this.highlightUpdated.emit(this.highlight);
   }
 
   isRouteActive(instruction: any[], exact?: boolean): boolean {

@@ -1,9 +1,13 @@
-import {Component, ComponentFactory, ComponentFactoryResolver, ViewChildren, ViewContainerRef} from '@angular/core';
-import {EvalResponse} from '../../../models/eval.model';
-import {BackendService} from '../../../shared/backend.service';
-import {InlineMessageComponent} from '../search/search.component';
-import {ConfigService} from '../../../shared/config.service';
-import {MatSnackBar} from '@angular/material';
+import {
+  Component, ComponentFactory, ComponentFactoryResolver, ViewChildren,
+  ViewContainerRef
+} from '@angular/core';
+import { EvalResponse } from '../../../models/eval.model';
+import { BackendService } from '../../../shared/backend.service';
+import { InlineMessageComponent } from '../search/search.component';
+import { ConfigService } from '../../../shared/config.service';
+import { MatSnackBar } from '@angular/material';
+import { UistateService } from '../../../shared/uistate.service';
 
 @Component({
   selector: 'app-evaluate',
@@ -20,6 +24,7 @@ export class EvaluateComponent {
   };
   error = undefined;
   searchInProgress = false;
+  highlighting = true;
   results: EvalResponse;
 
   recallData: any;
@@ -35,6 +40,7 @@ export class EvaluateComponent {
   expandedRowRetrievedDocuments: number;
 
   constructor(private backendService: BackendService,
+              private uistateService: UistateService,
               private resolver: ComponentFactoryResolver,
               public snackBar: MatSnackBar) {
   }
@@ -85,6 +91,8 @@ export class EvaluateComponent {
 
         this.updateInspectedDocument(this.inspectDocument);
 
+        this.changeHighlighting();
+
         this.snackBar.open('Evaluation updated.', 'OK', {duration: 2000});
         this.searchInProgress = false;
       },
@@ -96,6 +104,19 @@ export class EvaluateComponent {
         this.searchInProgress = false;
       }
     );
+  }
+
+  changeHighlighting() {
+    if (this.highlighting) {
+      this.uistateService.highlight = this.extractSearchTerms(
+        this.query);
+    } else {
+      this.uistateService.highlight = '';
+    }
+  }
+
+  extractSearchTerms(query: string): string {
+    return query.replace(/#\w+/g, '').match(/\w+/g).join('|');
   }
 
   updateInspectedDocument(inspectDocument) {
