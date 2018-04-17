@@ -167,6 +167,11 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/DocumentReference'
+      relevant_not_retrieved:
+        description: Relevant documents that were not retrieved.
+        type: array
+        items:
+          $ref: '#/definitions/DocumentReference'
       missing_relevant_documents:
         description: A list of document ids that are not present in the corpus.
         type: array
