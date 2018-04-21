@@ -78,6 +78,7 @@ export class SearchComponent {
   paginate(event: PageEvent) {
     this.searchInProgress = true;
     this.backendService.getSearchResults(this.query, 10, event.pageIndex).subscribe((response: SearchResults) => {
+      this.searchInProgress = false;
       this.results = response;
     });
   }
