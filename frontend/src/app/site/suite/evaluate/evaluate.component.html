@@ -98,6 +98,8 @@
             showXAxisLabel="true"
             showYAxisLabel="true"
             autoScale="true"
+            yScaleMin="0.0"
+            yScaleMax="1.0"
             [results]="recallData">
           </ngx-charts-line-chart>
         </div>
@@ -111,6 +113,8 @@
             showXAxisLabel="true"
             showYAxisLabel="true"
             autoScale="true"
+            yScaleMin="0.0"
+            yScaleMax="1.0"
             [results]="precisionData">
           </ngx-charts-line-chart>
         </div>
@@ -176,7 +180,7 @@
       </mat-expansion-panel-header>
 
       <ul>
-        <li *ngFor="let doc_id of results.missing_relevant_documents">{{doc_id}}}</li>
+        <li *ngFor="let doc_id of results.missing_relevant_documents">{{doc_id}}</li>
       </ul>
     </mat-expansion-panel>
   </mat-accordion>
