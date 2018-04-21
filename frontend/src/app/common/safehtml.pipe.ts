@@ -10,6 +10,7 @@ export class SafehtmlPipe implements PipeTransform {
   }
 
   transform(html) {
+    // Pipe to dynamically render HTML. Used to show the document.
     return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 }

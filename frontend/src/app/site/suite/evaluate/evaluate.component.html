@@ -3,29 +3,39 @@
   <mat-card-content>
     <div fxLayout="column">
       <mat-form-field>
-        <textarea [(ngModel)]="query" matInput matTextareaAutosize placeholder="Enter an Indri query..."></textarea>
+        <textarea [(ngModel)]="query" matInput matTextareaAutosize
+                  placeholder="Enter an Indri query..."></textarea>
       </mat-form-field>
     </div>
 
     <div fxLayout="row" fxLayoutAlign="space-between end">
       <div fxLayout="row" fxFlex="20%">
         <mat-form-field class="query-id-input">
-          <input matTooltip="The query id should be just a number." [(ngModel)]="queryId" matInput placeholder="Query Id">
-          <mat-hint align="start"><strong>This is the query we try to optimize for.</strong></mat-hint>
+          <input matTooltip="The query id should be just a number."
+                 [(ngModel)]="queryId" matInput placeholder="Query Id">
+          <mat-hint align="start"><strong>This is the query to
+            optimize.</strong></mat-hint>
         </mat-form-field>
 
         <mat-form-field>
-          <input matTooltip="Enter the full document id." [(ngModel)]="inspectDocument" (input)="updateInspectedDocument(inspectDocument)" matInput placeholder="Inspect Document Id">
-          <mat-hint align="start"><strong>The id of a document you try to optimize..</strong></mat-hint>
+          <input matTooltip="Enter the full document id."
+                 [(ngModel)]="inspectDocument"
+                 (input)="updateInspectedDocument(inspectDocument)" matInput
+                 placeholder="Inspect Document Id">
+          <mat-hint align="start"><strong>The id of a document to
+            inspect.</strong></mat-hint>
         </mat-form-field>
 
         <div fxLayoutAlign="center center">
-          <mat-checkbox [(ngModel)]="highlighting" (change)="changeHighlighting()">Highlight Results</mat-checkbox>
+          <mat-checkbox [(ngModel)]="highlighting"
+                        (change)="changeHighlighting()">Highlight Results
+          </mat-checkbox>
         </div>
 
       </div>
 
-      <button [disabled]="!query.length || !queryId.length" (click)="search()" mat-icon-button  mat-raised-button color="primary">
+      <button [disabled]="!query.length || !queryId.length" (click)="search()"
+              mat-icon-button mat-raised-button color="primary">
         <mat-icon aria-label="Search">search</mat-icon>
       </button>
     </div>
@@ -63,8 +73,10 @@
         No document found.
       </div>
       <div *ngIf="inspectDocumentData.text.length">
-        Categories: <strong *ngFor="let category of inspectDocumentData.categories">{{category}}  </strong>
-        <app-document-viewer [document]="inspectDocumentData.text"></app-document-viewer>
+        Categories: <strong
+        *ngFor="let category of inspectDocumentData.categories">{{category}} </strong>
+        <app-document-viewer
+          [document]="inspectDocumentData.text"></app-document-viewer>
       </div>
     </mat-expansion-panel>
 
@@ -76,19 +88,41 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <div class="mini-stats" fxFlex="100" fxLayout="row wrap" fxLayoutGap="25px" fxLayoutAlign="space-evenly center">
-        <app-mini-stat matTooltip="Mean average precision [map]" label="Mean Precision" [oldValue]="oldResults.eval.map" [value]="results.eval.map"></app-mini-stat>
-        <app-mini-stat matTooltip="Precision of the first R documents, where R are the number of relevants [Rprec]" label="R-Precision" [oldValue]="oldResults.eval.Rprec" [value]="results.eval.Rprec"></app-mini-stat>
-        <app-mini-stat matTooltip="Binary preference [bpref]" label="Binary Preference" [oldValue]="oldResults.eval.bpref" [value]="results.eval.bpref"></app-mini-stat>
-        <app-mini-stat matTooltip="Total number of retrieved documents [num_ret]" label="Retrieved Documents" [oldValue]="oldResults.eval.num_ret" [value]="results.eval.num_ret"></app-mini-stat>
-        <app-mini-stat matTooltip="Total number of relevant documents retrieved (in the results file) [num_rel_ret]" label="Relevant Retrieved" [oldValue]="oldResults.eval.num_rel_ret" [value]="results.eval.num_rel_ret"></app-mini-stat>
-        <app-mini-stat matTooltip="Number of relevant documents that can actually be retrieved, as not all relevant documents are in the corpus." label="Max. Relevant" [value]="results.eval.num_rel - results.missing_relevant_documents.length"></app-mini-stat>
-        <app-mini-stat matTooltip="Total number of relevant documents (according to the qrels file) [num_rel]" label="Relevant Documents" [value]="results.eval.num_rel"></app-mini-stat>
+      <div class="mini-stats" fxFlex="100" fxLayout="row wrap"
+           fxLayoutGap="25px" fxLayoutAlign="space-evenly center">
+        <app-mini-stat matTooltip="Mean average precision [map]"
+                       label="Mean Precision" [oldValue]="oldResults.eval.map"
+                       [value]="results.eval.map"></app-mini-stat>
+        <app-mini-stat
+          matTooltip="Precision of the first R documents, where R are the number of relevants [Rprec]"
+          label="R-Precision" [oldValue]="oldResults.eval.Rprec"
+          [value]="results.eval.Rprec"></app-mini-stat>
+        <app-mini-stat matTooltip="Binary preference [bpref]"
+                       label="Binary Preference"
+                       [oldValue]="oldResults.eval.bpref"
+                       [value]="results.eval.bpref"></app-mini-stat>
+        <app-mini-stat
+          matTooltip="Total number of retrieved documents [num_ret]"
+          label="Retrieved Documents" [oldValue]="oldResults.eval.num_ret"
+          [value]="results.eval.num_ret"></app-mini-stat>
+        <app-mini-stat
+          matTooltip="Total number of relevant documents retrieved (in the results file) [num_rel_ret]"
+          label="Relevant Retrieved" [oldValue]="oldResults.eval.num_rel_ret"
+          [value]="results.eval.num_rel_ret"></app-mini-stat>
+        <app-mini-stat
+          matTooltip="Number of relevant documents that can actually be retrieved, as not all relevant documents are in the corpus."
+          label="Max. Relevant"
+          [value]="results.eval.num_rel - results.missing_relevant_documents.length"></app-mini-stat>
+        <app-mini-stat
+          matTooltip="Total number of relevant documents (according to the qrels file) [num_rel]"
+          label="Relevant Documents"
+          [value]="results.eval.num_rel"></app-mini-stat>
       </div>
 
       <mat-divider></mat-divider>
 
-      <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-md="column" fxLayoutAlign="space-between center">
+      <div fxLayout="row" fxLayoutGap="10px" fxLayout.lt-md="column"
+           fxLayoutAlign="space-between center">
         <div class="charts" fxFlex="50%">
           <ngx-charts-line-chart
             xAxisLabel="Recall"
@@ -129,7 +163,8 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <app-data-table [dataSource]="results.irrelevant_retrieved" (inspect)="updateInspectedDocument($event)"></app-data-table>
+      <app-data-table [dataSource]="results.irrelevant_retrieved"
+                      (inspect)="updateInspectedDocument($event)"></app-data-table>
     </mat-expansion-panel>
 
     <mat-expansion-panel>
@@ -139,7 +174,8 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <app-data-table [dataSource]="results.relevant_not_retrieved" (inspect)="updateInspectedDocument($event)"></app-data-table>
+      <app-data-table [dataSource]="results.relevant_not_retrieved"
+                      (inspect)="updateInspectedDocument($event)"></app-data-table>
     </mat-expansion-panel>
 
     <mat-expansion-panel>
@@ -149,7 +185,8 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <app-data-table [dataSource]="results.relevant_retrieved" (inspect)="updateInspectedDocument($event)"></app-data-table>
+      <app-data-table [dataSource]="results.relevant_retrieved"
+                      (inspect)="updateInspectedDocument($event)"></app-data-table>
     </mat-expansion-panel>
 
     <mat-expansion-panel>
@@ -159,7 +196,8 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <app-data-table [dataSource]="results.relevant_documents" (inspect)="updateInspectedDocument($event)"></app-data-table>
+      <app-data-table [dataSource]="results.relevant_documents"
+                      (inspect)="updateInspectedDocument($event)"></app-data-table>
     </mat-expansion-panel>
 
     <mat-expansion-panel>
@@ -172,7 +210,7 @@
       <pre>{{results.raw_eval_output}}</pre>
     </mat-expansion-panel>
 
-    <mat-expansion-panel>
+    <mat-expansion-panel *ngIf="results.missing_relevant_documents">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Relevant Documents not present in Corpus
@@ -180,7 +218,9 @@
       </mat-expansion-panel-header>
 
       <ul>
-        <li *ngFor="let doc_id of results.missing_relevant_documents">{{doc_id}}</li>
+        <li *ngFor="let doc_id of results.missing_relevant_documents">
+          {{doc_id}}
+        </li>
       </ul>
     </mat-expansion-panel>
   </mat-accordion>

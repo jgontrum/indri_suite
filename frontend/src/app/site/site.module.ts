@@ -6,7 +6,10 @@ import { CommonModules } from '../common/common.module';
 import { SettingsComponent } from './settings/settings.component';
 import { FormsModule } from '@angular/forms';
 import { SuiteComponent } from './suite/suite.component';
-import { InlineMessageComponent, SearchComponent } from './suite/search/search.component';
+import {
+  InlineMessageComponent,
+  SearchComponent
+} from './suite/search/search.component';
 import { EvaluateComponent } from './suite/evaluate/evaluate.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxChartsModule } from '@swimlane/ngx-charts';

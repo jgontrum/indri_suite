@@ -13,7 +13,9 @@ export class BackendService {
   constructor(private httpClient: HttpClient) {
   }
 
-  public getSearchResults(query: string, size: number, page: number): Observable<SearchResults> {
+  public getSearchResults(query: string, size: number,
+                          page: number): Observable<SearchResults> {
+    // Call the API to get search results for a query. Supports pagination.
     const url = environment.apiBaseUrl + `search?size=${size}&page=${page}`;
     const body = {
       query: query,
@@ -26,7 +28,9 @@ export class BackendService {
     });
   }
 
-  public getEvaluationResults(query: string, query_id: string): Observable<EvalResponse> {
+  public getEvaluationResults(query: string,
+                              query_id: string): Observable<EvalResponse> {
+    // Get the evaluation results for a query for a given query/topic id
     const url = environment.apiBaseUrl + `evaluate`;
     const body = {
       query: query,

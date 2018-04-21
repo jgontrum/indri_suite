@@ -1,4 +1,4 @@
-.PHONY: clean start update-all-packages
+.PHONY: clean start update-all-packages compile-frontend
 
 all: env/bin/python
 

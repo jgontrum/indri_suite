@@ -15,6 +15,13 @@ class TrecEvalClient:
         self.logger = logging.getLogger('main')
 
     def _process_eval_output(self, eval_output, query_id):
+        """
+        Parse the output from trec_eval and return the data for a
+        given query id.
+        :param eval_output:
+        :param query_id:
+        :return:
+        """
         output = {}
         for line in eval_output.decode().split("\n"):
             if not line.strip():
@@ -31,6 +38,11 @@ class TrecEvalClient:
         return output
 
     def _get_gold_documents(self, query_id):
+        """
+        From a qrel file, get all document ids for the current query id.
+        :param query_id:
+        :return:
+        """
         for line in open(self.gold_eval_path):
             if line.startswith(str(query_id) + " "):
                 _, _, doc_id, match = line.split()
@@ -55,6 +67,8 @@ class TrecEvalClient:
                                     "in the qrel file.".format(query_id))
 
         t = time.time()
+
+        # Run query and save the raw output of Indri for trec_eval
         query_output = self.indri_client.raw_query(query, query_id)
 
         filename = self.indri_client.tmp_folder + "query_results_" + \
@@ -67,6 +81,7 @@ class TrecEvalClient:
             time.time() - t))
         t = time.time()
 
+        # Evaluate with trec_eval and then delete all temp files
         try:
             eval_output = self.trec_eval_cli.run(self.gold_eval_path, filename)
             os.remove(filename)
@@ -79,6 +94,12 @@ class TrecEvalClient:
         self.logger.info("Evaluation: trec_eval took {0:.2f}s".format(
             time.time() - t))
         t = time.time()
+
+        # Generate the different document categories:
+        # - Gold documents
+        # - relevant_retrieved_documents: True positives
+        # - irrelevant_retrieved_documents: False positives
+        # - relevant_not_retrieved_documents: False negatives
 
         gold_documents = set(self._get_gold_documents(query_id))
         retrieved_documents = [{
@@ -103,6 +124,9 @@ class TrecEvalClient:
             [ref['document_id'] for ref in
              retrieved_documents])
 
+        # Return the evaluation result and get the document text for all
+        # returned document ids
+        # TODO Here is too much code duplication, simplify.
         ret = {
             "raw_eval_output": eval_output.decode(),
             "eval": structured_output,

@@ -114,6 +114,8 @@ export class EvaluateComponent {
   }
 
   updateInspectedDocument(inspectDocument) {
+    // Show the inspected document first and also tell where we found it.
+
     this.inspectDocument = inspectDocument;
     this.inspectDocumentData = {
       text: '',

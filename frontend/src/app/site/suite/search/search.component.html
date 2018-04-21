@@ -3,12 +3,20 @@
   <mat-card-content>
     <div fxLayout="column">
       <mat-form-field>
-        <textarea [(ngModel)]="query" matInput rows="10" placeholder="Enter an Indri query..."></textarea>
+        <textarea [(ngModel)]="query" matInput matTextareaAutosize
+                  placeholder="Enter an Indri query..."></textarea>
       </mat-form-field>
     </div>
 
-    <div fxLayout="row" fxLayoutAlign="end center">
-      <button [disabled]="!query.length" (click)="search()" mat-icon-button  mat-raised-button color="primary">
+    <div fxLayout="row" fxLayoutAlign="space-between end">
+      <div fxFlex="20%">
+        <mat-checkbox [(ngModel)]="highlighting"
+                      (change)="changeHighlighting()">Highlight Results
+        </mat-checkbox>
+      </div>
+
+      <button [disabled]="!query.length" (click)="search()" mat-icon-button
+              mat-raised-button color="primary">
         <mat-icon aria-label="Search">search</mat-icon>
       </button>
     </div>
@@ -35,7 +43,8 @@
 
   <div *ngIf="results">
     <mat-card-subtitle>
-      Found {{results.size}} documents. Here are the first {{results.documents.length}} results.
+      Found {{results.size}} documents. Here are the first
+      {{results.documents.length}} results.
     </mat-card-subtitle>
     <mat-card-content>
       <mat-table #table [dataSource]="results.documents">
@@ -46,37 +55,44 @@
         <!-- Position Column -->
         <ng-container matColumnDef="index">
           <mat-header-cell *matHeaderCellDef fxFlex="10%">No.</mat-header-cell>
-          <mat-cell *matCellDef="let element" fxFlex="10%">{{element.index}}</mat-cell>
+          <mat-cell *matCellDef="let element" fxFlex="10%">{{element.index}}
+          </mat-cell>
         </ng-container>
 
         <!-- Document Column -->
         <ng-container matColumnDef="document_id">
           <mat-header-cell *matHeaderCellDef fxFlex>Document</mat-header-cell>
-          <mat-cell *matCellDef="let element" fxFlex>{{element.document_id}}</mat-cell>
+          <mat-cell *matCellDef="let element" fxFlex>{{element.document_id}}
+          </mat-cell>
         </ng-container>
 
         <!-- Score Column -->
         <ng-container matColumnDef="score">
-          <mat-header-cell *matHeaderCellDef fxFlex="10%">Score</mat-header-cell>
-          <mat-cell *matCellDef="let element" fxFlex="10%">{{element.score}}</mat-cell>
+          <mat-header-cell *matHeaderCellDef fxFlex="10%">Score
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element" fxFlex="10%">{{element.score}}
+          </mat-cell>
         </ng-container>
 
         <!-- Score Column -->
         <ng-container matColumnDef="view">
           <mat-header-cell *matHeaderCellDef fxFlex="10%"></mat-header-cell>
-          <mat-cell *matCellDef="let element;" fxLayout="row" fxLayoutAlign="end center" fxFlex="10%">
+          <mat-cell *matCellDef="let element;" fxLayout="row"
+                    fxLayoutAlign="end center" fxFlex="10%">
             <mat-icon>receipt</mat-icon>
           </mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns; let index = index"
-                 (click)="insertComponent(index)"
-                 #tableRow
-                 matRipple></mat-row>
+        <mat-row
+          *matRowDef="let row; columns: displayedColumns; let index = index"
+          (click)="insertComponent(index)"
+          #tableRow
+          matRipple></mat-row>
       </mat-table>
 
-      <mat-paginator [length]="results.size" [pageSize]="10" showFirstLastButtons="true" (page)="paginate($event)">
+      <mat-paginator [length]="results.size" [pageSize]="10"
+                     showFirstLastButtons="true" (page)="paginate($event)">
       </mat-paginator>
 
     </mat-card-content>

@@ -7,8 +7,17 @@ from indri_suite.common.indri_client import IndriClient, BadQueryException
 
 
 def post(request, size, page):
+    """
+    Route: /api/v1/search
+    See config/api.yml for OpenAPI specification.
+    :param request: JSON body
+    :param size: int
+    :param page: int
+    :return:
+    """
     logger.info("Received search request: '{}'.".format(request))
 
+    # Check that paths are valid (to prevent errors and for security)
     if not os.path.isdir(request['settings']['index_path']):
         return "Index directory not found: {}. Please use absolute paths.".format(
             request['settings']['index_path']), 400

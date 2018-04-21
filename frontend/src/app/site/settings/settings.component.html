@@ -23,8 +23,10 @@
                placeholder="Path to file containing the 'qrels' that we test against, e.g.: /nobackup/user/ir/lab2/AH-ENGLISH-CLEF2006.txt">
       </mat-form-field>
     </div>
-    <button [disabled]="!(corpusPath.length && indexPath.length && goldPath.length)" (click)="save()" mat-raised-button
-            color="primary">SAVE
+    <button
+      [disabled]="!(corpusPath.length && indexPath.length && goldPath.length)"
+      (click)="save()" mat-raised-button
+      color="primary">SAVE
     </button>
 
   </mat-card-content>

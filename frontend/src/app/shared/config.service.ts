@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class ConfigService {
-  constructor() {
-  }
+  // Stores all configurations and last values in the search / eval fields.
+  // The code is a bit messy as all variables are stored in localstorage
+  // and I had to use getter/setter for that.
 
   static get settings(): object {
     const settings_ = JSON.parse(localStorage.getItem('indriSettings'));

@@ -21,6 +21,7 @@ export class DataTableComponent {
   }
 
   insertComponent(index: number) {
+    // Inserts a row with the document.
     if (this.expandedRow != null) {
       // clear old content
       this.rowContainers.toArray()[this.expandedRow].clear();

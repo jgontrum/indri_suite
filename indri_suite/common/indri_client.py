@@ -19,6 +19,8 @@ class IndriClient:
     def __init__(self, index_path: object, corpus_path: object,
                  indri_cli: object,
                  tmp_folder: object = "./tmp"):
+        self.logger = logging.getLogger('main')
+
         self.corpus_path = corpus_path
         self.index_path = index_path
         self.indri_cli = indri_cli
@@ -33,14 +35,20 @@ class IndriClient:
         if self.corpus_path[-1] != "/":
             self.corpus_path += "/"
 
+        # Create a prefix for any temp files based on the used index.
         self.tmp_folder += str(
             hashlib.md5(self.index_path.encode()).hexdigest()) + "_"
 
+        # Map all document ids to their filepath so that we can access them
+        # quickly later on.
         self.document_index = self.create_document_to_index_file_mapping()
 
-        self.logger = logging.getLogger('main')
 
     def create_document_to_index_file_mapping(self):
+        """
+        Iterates over all documents in the corpus, and creates a mapping from
+        document id to their position (filename, line number).
+        """
         try:
             return json.load(open(self.tmp_folder + "document_index.json"))
         except FileNotFoundError:
@@ -65,6 +73,7 @@ class IndriClient:
             json.dump(document_index,
                       open(self.tmp_folder + "document_index.json", "w"),
                       sort_keys=True, indent=2)
+
             return document_index
 
     def return_documents_for_result(self, result):
@@ -74,6 +83,12 @@ class IndriClient:
         return ret
 
     def lookup_document(self, document_ref):
+        """
+        Given a document id, it looks it up in our mapping, opens the
+        corresponding file in the corpus and returns the whole document.
+        :param document_ref:
+        :return:
+        """
         if not document_ref:
             return "Document not available."
         document = ""
@@ -86,6 +101,12 @@ class IndriClient:
         return document.strip()  # .replace("\n", "<br>")
 
     def _create_query_file(self, query, query_id="0"):
+        """
+        Creates the XML file needed to query the Indri system.
+        :param query:
+        :param query_id:
+        :return:
+        """
         search_query = {
             "index": self.index_path,
             "trecFormat": "true",
@@ -112,6 +133,12 @@ class IndriClient:
         return path
 
     def _parse_query_result(self, query_result):
+        """
+        Iterate over the result from IndriRunQuery and store it in a structured
+        way.
+        :param query_result:
+        :return:
+        """
         results = []
         for line in query_result.decode().split("\n"):
             if not line.strip():
@@ -127,12 +154,27 @@ class IndriClient:
         return results
 
     def raw_query(self, query, query_id="0"):
+        """
+        Create a query file for the query, call Indri, delete the file
+        and return the unparsed result. Beware that the return type is
+        not string, but binary.
+        :param query:
+        :param query_id:
+        :return:
+        """
         query_file_path = self._create_query_file(query, query_id)
         ret = self.indri_cli.run(query_file_path)
         os.remove(query_file_path)
         return ret
 
     def query(self, query, size=50, page=0):
+        """
+        Main function for the /search route.
+        :param query: Query string
+        :param size: Number of documents to return
+        :param page: Pagination page
+        :return:
+        """
         t = time.time()
         query_output = self.raw_query(query)
 
@@ -145,6 +187,7 @@ class IndriClient:
             time.time() - t))
         t = time.time()
 
+        # Lookup the documents for the document ids
         full_results = []
         for result in query_results[size * page: size * (page + 1)]:
             full_results.append(self.return_documents_for_result(result))

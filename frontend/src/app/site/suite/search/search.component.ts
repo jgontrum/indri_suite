@@ -1,9 +1,17 @@
-import { Component, ComponentFactory, ComponentFactoryResolver, Input, ViewChildren, ViewContainerRef } from '@angular/core';
+import {
+  Component, ComponentFactory, ComponentFactoryResolver, Input,
+  ViewChildren, ViewContainerRef
+} from '@angular/core';
 import { SearchResults } from '../../../models/search.model';
 import { BackendService } from '../../../shared/backend.service';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+  animate, state, style, transition,
+  trigger
+} from '@angular/animations';
 import { PageEvent } from '@angular/material';
 import { ConfigService } from '../../../shared/config.service';
+import { EvaluateComponent } from '../evaluate/evaluate.component';
+import { UistateService } from '../../../shared/uistate.service';
 
 
 @Component({
@@ -12,7 +20,11 @@ import { ConfigService } from '../../../shared/config.service';
   styleUrls: ['./search.component.styl'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0', visibility: 'hidden'})),
+      state('collapsed', style({
+        height: '0px',
+        minHeight: '0',
+        visibility: 'hidden'
+      })),
       state('expanded', style({height: '*', visibility: 'visible'})),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
@@ -23,6 +35,7 @@ export class SearchComponent {
   error = undefined;
   searchInProgress = false;
   results: SearchResults;
+  highlighting = true;
 
   displayedColumns = ['index', 'document_id', 'score', 'view'];
 
@@ -30,7 +43,17 @@ export class SearchComponent {
   expandedRow: number;
 
   constructor(private backendService: BackendService,
+              private uistateService: UistateService,
               private resolver: ComponentFactoryResolver) {
+  }
+
+  changeHighlighting() {
+    if (this.highlighting) {
+      this.uistateService.highlight = EvaluateComponent.extractSearchTerms(
+        this.query);
+    } else {
+      this.uistateService.highlight = '';
+    }
   }
 
   search() {
@@ -42,6 +65,7 @@ export class SearchComponent {
         this.results = response;
         this.error = undefined;
         this.searchInProgress = false;
+        this.changeHighlighting();
       },
       (error) => {
         console.log(error);

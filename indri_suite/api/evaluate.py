@@ -8,8 +8,15 @@ from indri_suite.common.trec_eval_client import TrecEvalClient
 
 
 def post(request):
+    """
+    Route: /api/v1/evaluate
+    See config/api.yml for OpenAPI specification.
+    :param request: JSON body
+    :return:
+    """
     logger.info("Received evaluation request: '{}'.".format(request))
 
+    # Check that paths are valid (to prevent errors and for security)
     if not os.path.isfile(request['settings']['gold_eval_path']):
         return "Qrel file not found: {}. Please use absolute paths.".format(
             request['settings']['gold_eval_path']), 400
